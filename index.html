@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JustDraft · Email Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Roboto', -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 44px 24px 80px;
+    position: relative;
+    overflow-x: hidden;
+    background: #dfe3ea;
+  }
+
+  /* Ambient blobs */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    width: 600px; height: 600px;
+    top: -120px; left: -160px;
+    background: radial-gradient(circle, rgba(122,4,221,0.16) 0%, transparent 70%);
+  }
+  body::after {
+    width: 500px; height: 500px;
+    bottom: -80px; right: -120px;
+    background: radial-gradient(circle, rgba(100,150,255,0.12) 0%, transparent 70%);
+  }
+
+  .chrome, .email-shell, .reset-btn { position: relative; z-index: 1; }
+
+  /* ── Title ── */
+  .app-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.38);
+    letter-spacing: 0.2px;
+    margin-bottom: 12px;
+    align-self: center;
+  }
+  .app-title strong {
+    color: #7A04DD;
+    font-weight: 700;
+  }
+
+  /* ── Chrome wrapper ── */
+  .chrome {
+    width: 620px;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  /* Glass panel: subject + preview */
+  .glass-panel {
+    background: rgba(255,255,255,0.52);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.78);
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    border-radius: 16px 16px 0 0;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.92) inset,
+      0 -1px 0 rgba(0,0,0,0.04) inset;
+    overflow: hidden;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: baseline;
+    padding: 11px 18px;
+    gap: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+  .meta-row:last-child { border-bottom: none; }
+
+  .meta-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.32);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    min-width: 86px;
+    flex-shrink: 0;
+  }
+  .meta-input {
+    font-size: 14px;
+    color: rgba(0,0,0,0.82);
+    font-family: 'Roboto', sans-serif;
+    flex: 1;
+    line-height: 1.4;
+    outline: none;
+    border-radius: 4px;
+    padding: 1px 4px;
+    margin: -1px -4px;
+    transition: background 0.15s;
+  }
+  .meta-input:hover { background: rgba(122,4,221,0.05); }
+  .meta-input:focus { background: rgba(122,4,221,0.08); }
+  .meta-input.dimmed { color: rgba(0,0,0,0.36); }
+
+  /* Slim format bar — just the colour button lives here now */
+  .format-bar {
+    background: rgba(255,255,255,0.36);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.62);
+    border-top: none;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .fmt-btn {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 7px;
+    height: 26px;
+    padding: 0 10px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+    color: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.12s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+    white-space: nowrap;
+  }
+  .fmt-btn:hover {
+    background: rgba(122,4,221,0.09);
+    border-color: rgba(122,4,221,0.28);
+    color: #7A04DD;
+  }
+  .fmt-btn.active {
+    background: rgba(122,4,221,0.13);
+    border-color: rgba(122,4,221,0.42);
+    color: #7A04DD;
+  }
+
+  /* The purple colour swatch inside the button */
+  .colour-swatch {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: #7A04DD;
+    border: 1.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 0 0 1px rgba(122,4,221,0.35);
+    flex-shrink: 0;
+  }
+
+  .fmt-sep {
+    width: 1px; height: 18px;
+    background: rgba(0,0,0,0.09);
+    margin: 0 4px;
+  }
+
+  .fmt-hint {
+    margin-left: auto;
+    font-size: 11px;
+    color: rgba(0,0,0,0.28);
+    font-weight: 300;
+  }
+
+  /* ── Email shell ── */
+  .email-shell {
+    width: 620px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.03),
+      0 8px 20px rgba(0,0,0,0.05),
+      0 24px 50px rgba(0,0,0,0.07),
+      0 48px 80px rgba(0,0,0,0.05);
+  }
+
+  /* Hero */
+  .hero {
+    background: #7A04DD;
+    height: 160px;
+  }
+
+  /* Body */
+  .email-body {
+    padding: 30px 36px 10px;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .greeting       { font-size: 16px; color: #333; margin-bottom: 16px; }
+  .para           { margin-bottom: 16px; color: #333; font-size: 16px; line-height: 1.65; }
+  .para-highlight { margin-bottom: 16px; color: #555; font-size: 16px; line-height: 1.65; }
+  .para-cta-text  { margin-bottom: 24px; color: #7A04DD; font-size: 16px; line-height: 1.65; }
+
+  /* CTA */
+  .cta-wrap { text-align: center; padding: 4px 0 30px; }
+  .cta-btn {
+    display: inline-block;
+    background: #1a73e8;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 14px 38px;
+    border-radius: 6px;
+    cursor: text;
+  }
+
+  /* Footer */
+  .email-footer {
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    padding: 24px 36px 20px;
+    text-align: center;
+  }
+  .social-icons { display: flex; justify-content: center; gap: 14px; margin-bottom: 18px; }
+  .social-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #ddd;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: #555;
+  }
+  .footer-legal   { font-size: 11px; color: #999; line-height: 1.6; margin-bottom: 12px; }
+  .footer-opt     { font-size: 11px; color: #aaa; margin-bottom: 14px; }
+  .footer-links   { font-size: 12px; margin-bottom: 14px; display: flex; gap: 18px; justify-content: center; }
+  .footer-links a { color: #7A04DD; text-decoration: underline; }
+  .footer-company { font-size: 11px; color: #aaa; line-height: 1.7; }
+  .footer-company a { color: #7A04DD; text-decoration: underline; }
+
+  /* Editable highlights */
+  [contenteditable] { outline: none; border-radius: 3px; }
+  [contenteditable]:hover { outline: 1.5px dashed rgba(122,4,221,0.35); outline-offset: 3px; }
+  [contenteditable]:focus { outline: 2px solid rgba(122,4,221,0.65); outline-offset: 3px; background: rgba(122,4,221,0.025); }
+
+  /* Reset */
+  .reset-btn {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.42);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 12px;
+    cursor: pointer;
+    color: rgba(0,0,0,0.4);
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.15s;
+  }
+  .reset-btn:hover {
+    background: rgba(255,255,255,0.68);
+    color: rgba(0,0,0,0.6);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  }
+
+  /* Colour-applied spans */
+  .jg-purple { color: #7A04DD; }
+</style>
+</head>
+<body>
+
+<!-- App title -->
+<div class="app-title">Just<strong>Draft</strong> &nbsp;·&nbsp; Email Mockup Editor</div>
+
+<div class="chrome">
+
+  <!-- Glass: subject + preview -->
+  <div class="glass-panel">
+    <div class="meta-row">
+      <span class="meta-label">Subject</span>
+      <div class="meta-input" contenteditable="true" spellcheck="true">Your email subject line</div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Preview</span>
+      <div class="meta-input dimmed" contenteditable="true" spellcheck="true">Preview text that appears in the inbox…</div>
+    </div>
+  </div>
+
+  <!-- Format bar: just the purple colour toggle -->
+  <div class="format-bar">
+    <button class="fmt-btn" id="btn-purple" onclick="applyPurple()" title="Make selected text JustGiving purple">
+      <span class="colour-swatch"></span> JG Purple
+    </button>
+    <div class="fmt-sep"></div>
+    <span class="fmt-hint">⌘B bold &nbsp;·&nbsp; ⌘I italic &nbsp;·&nbsp; select text to colour</span>
+  </div>
+</div>
+
+<!-- Email -->
+<div class="email-shell">
+
+  <div class="hero"></div>
+
+  <div class="email-body">
+    <p class="greeting" contenteditable="true" spellcheck="true">Hi there,</p>
+    <p class="para" contenteditable="true" spellcheck="true">Congratulations to you and your charity on your London Marathon fundraising! We know this means a lot for your mission, and we thank you for making JustGiving a part of your journey.</p>
+    <p class="para-highlight" contenteditable="true" spellcheck="true">We'd love to know… <strong>how was your fundraising experience?</strong></p>
+    <p class="para-cta-text" contenteditable="true" spellcheck="true">If you have 5 mins, answer a few Qs to be in with a chance to win a £50 Amazon voucher from our team.</p>
+  </div>
+
+  <div class="cta-wrap">
+    <span class="cta-btn" contenteditable="true" spellcheck="true">Take our short survey</span>
+  </div>
+
+  <div class="email-footer">
+    <div class="social-icons">
+      <div class="social-icon">f</div>
+      <div class="social-icon">𝕏</div>
+      <div class="social-icon">in</div>
+      <div class="social-icon">◎</div>
+    </div>
+    <div class="footer-legal" contenteditable="true" spellcheck="true">*Terms and conditions apply. Entry to JustGiving's prize draw is open to UK residents aged 18 and over who received this email. To enter the Prize Draw, complete the survey, including your contact details by 23:59 on 26 May 2025. There is a limit of one entry per person.</div>
+    <div class="footer-opt" contenteditable="true" spellcheck="true">You are receiving this email because you are opted into marketing from JustGiving.</div>
+    <div class="footer-links">
+      <a href="#">Contact us</a>
+      <a href="#">FAQs</a>
+      <a href="#">Unsubscribe</a>
+    </div>
+    <div class="footer-company" contenteditable="true" spellcheck="true">
+      <a href="#">Giving.com Limited trading as JustGiving.com</a><br>
+      Registered in England No. 3871904<br><br>
+      Registered office:<br>
+      Studio 1.19, Canterbury Court<br>
+      1–3 Brixton Road, London, SW9 6DE
+    </div>
+  </div>
+
+</div>
+
+<button class="reset-btn" onclick="resetAll()">↺ Reset to defaults</button>
+
+<script>
+  // ── Save originals ──
+  const originals = {};
+  document.querySelectorAll('[contenteditable]').forEach((el, i) => {
+    el.dataset.id = i;
+    originals[i] = el.innerHTML;
+  });
+
+  function resetAll() {
+    if (!confirm('Reset all text to defaults?')) return;
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.innerHTML = originals[el.dataset.id];
+    });
+    updatePurpleBtn();
+  }
+
+  // ── Bold / Italic ──
+  function execFmt(command) {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const anchor = sel.anchorNode;
+    if (!anchor) return;
+    const parent = anchor.nodeType === 3 ? anchor.parentElement : anchor;
+    if (!parent.closest('[contenteditable]')) return;
+    document.execCommand(command, false, null);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey) {
+      if (e.key === 'b' || e.key === 'B') { e.preventDefault(); execFmt('bold'); }
+      if (e.key === 'i' || e.key === 'I') { e.preventDefault(); execFmt('italic'); }
+    }
+  });
+
+  // ── Purple colour toggle ──
+  function applyPurple() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+
+    const anchor = sel.anchorNode;
+    const parent = anchor.nodeType === 3 ? anchor.parentElement : anchor;
+    if (!parent.closest('[contenteditable]')) return;
+
+    // Check if selection is already fully purple — if so, remove colour
+    const range = sel.getRangeAt(0);
+    const container = range.commonAncestorContainer;
+    const el = container.nodeType === 3 ? container.parentElement : container;
+    const alreadyPurple = el.closest('.jg-purple') || el.style.color === 'rgb(122, 4, 221)';
+
+    if (alreadyPurple) {
+      document.execCommand('removeFormat', false, null);
+      document.execCommand('foreColor', false, 'inherit');
+    } else {
+      document.execCommand('styleWithCSS', false, true);
+      document.execCommand('foreColor', false, '#7A04DD');
+    }
+    updatePurpleBtn();
+  }
+
+  function updatePurpleBtn() {
+    const sel = window.getSelection();
+    const btn = document.getElementById('btn-purple');
+    if (!sel || sel.isCollapsed) { btn.classList.remove('active'); return; }
+    try {
+      const colour = document.queryCommandValue('foreColor');
+      // Chrome returns rgb(), Firefox may return hex
+      const isPurple = colour === 'rgb(122, 4, 221)' || colour === '#7a04dd' || colour === '#7A04DD';
+      btn.classList.toggle('active', isPurple);
+    } catch(e) {}
+  }
+
+  document.addEventListener('selectionchange', updatePurpleBtn);
+</script>
+
+</body>
+</html>
