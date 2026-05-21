@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JustDraft · Email Mockup</title>
+<title>JustDraft</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,13 +14,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 44px 24px 80px;
+    padding: 44px 24px 100px;
     position: relative;
     overflow-x: hidden;
     background: #dfe3ea;
   }
-
-  /* Ambient blobs */
   body::before, body::after {
     content: '';
     position: fixed;
@@ -40,30 +38,34 @@
     background: radial-gradient(circle, rgba(100,150,255,0.12) 0%, transparent 70%);
   }
 
-  .chrome, .email-shell, .reset-btn { position: relative; z-index: 1; }
+  /* ── Layout: sidebar + main column ── */
+  .workspace {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
 
-  /* ── Title ── */
+  /* ── App title ── */
   .app-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(0,0,0,0.38);
-    letter-spacing: 0.2px;
-    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+    font-size: 28px;
+    font-weight: 900;
+    color: rgba(0,0,0,0.12);
+    letter-spacing: -0.5px;
+    margin-bottom: 18px;
     align-self: center;
   }
-  .app-title strong {
-    color: #7A04DD;
-    font-weight: 700;
-  }
+  .app-title strong { color: #7A04DD; }
 
-  /* ── Chrome wrapper ── */
-  .chrome {
-    width: 620px;
-    max-width: 100%;
-    margin-bottom: 0;
-  }
+  /* ── Main column ── */
+  .main-col { display: flex; flex-direction: column; }
 
-  /* Glass panel: subject + preview */
+  /* ── Chrome (subject/preview/counters) ── */
+  .chrome { width: 620px; max-width: 100%; }
+
   .glass-panel {
     background: rgba(255,255,255,0.52);
     backdrop-filter: blur(28px) saturate(180%);
@@ -71,28 +73,24 @@
     border: 1px solid rgba(255,255,255,0.78);
     border-bottom: 1px solid rgba(255,255,255,0.4);
     border-radius: 16px 16px 0 0;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.92) inset,
-      0 -1px 0 rgba(0,0,0,0.04) inset;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.92) inset, 0 -1px 0 rgba(0,0,0,0.04) inset;
     overflow: hidden;
   }
-
   .meta-row {
     display: flex;
-    align-items: baseline;
-    padding: 11px 18px;
+    align-items: center;
+    padding: 9px 18px;
     gap: 12px;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .meta-row:last-child { border-bottom: none; }
-
   .meta-label {
     font-size: 11px;
     font-weight: 600;
     color: rgba(0,0,0,0.32);
     text-transform: uppercase;
     letter-spacing: 0.7px;
-    min-width: 86px;
+    min-width: 68px;
     flex-shrink: 0;
   }
   .meta-input {
@@ -110,76 +108,73 @@
   .meta-input:hover { background: rgba(122,4,221,0.05); }
   .meta-input:focus { background: rgba(122,4,221,0.08); }
   .meta-input.dimmed { color: rgba(0,0,0,0.36); }
-
-  /* Slim format bar — just the colour button lives here now */
-  .format-bar {
-    background: rgba(255,255,255,0.36);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255,255,255,0.62);
-    border-top: none;
-    padding: 6px 14px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .fmt-btn {
-    background: rgba(255,255,255,0.55);
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 7px;
-    height: 26px;
-    padding: 0 10px;
-    cursor: pointer;
-    font-size: 12px;
-    font-family: 'Roboto', sans-serif;
-    color: rgba(0,0,0,0.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    transition: all 0.12s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.07);
-    white-space: nowrap;
-  }
-  .fmt-btn:hover {
-    background: rgba(122,4,221,0.09);
-    border-color: rgba(122,4,221,0.28);
-    color: #7A04DD;
-  }
-  .fmt-btn.active {
-    background: rgba(122,4,221,0.13);
-    border-color: rgba(122,4,221,0.42);
-    color: #7A04DD;
-  }
-
-  /* The purple colour swatch inside the button */
-  .colour-swatch {
-    width: 11px; height: 11px;
-    border-radius: 50%;
-    background: #7A04DD;
-    border: 1.5px solid rgba(255,255,255,0.8);
-    box-shadow: 0 0 0 1px rgba(122,4,221,0.35);
+  .char-counter {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.25);
+    min-width: 26px;
+    text-align: right;
     flex-shrink: 0;
+    transition: color 0.2s;
+    font-variant-numeric: tabular-nums;
+  }
+  .char-counter.warn { color: #e09000; }
+  .char-counter.over { color: #d93025; }
+
+  /* Body stats bar */
+  .body-counter-bar {
+    background: rgba(255,255,255,0.28);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-top: none;
+    padding: 9px 18px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .body-stat {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.32);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .body-stat span {
+    font-weight: 400;
+    font-size: 14px;
+    color: rgba(0,0,0,0.75);
+    text-transform: none;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
   }
 
-  .fmt-sep {
-    width: 1px; height: 18px;
-    background: rgba(0,0,0,0.09);
-    margin: 0 4px;
+  /* ── Email outer (resizes for mobile) ── */
+  .email-outer {
+    width: 620px;
+    max-width: 100%;
+    transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
   }
+  .email-outer.mobile-view { width: 375px; }
 
-  .fmt-hint {
-    margin-left: auto;
+  /* Mobile label */
+  .mobile-label {
     font-size: 11px;
     color: rgba(0,0,0,0.28);
-    font-weight: 300;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    height: 0;
+    overflow: hidden;
   }
+  .mobile-label.visible { opacity: 1; height: 20px; padding-top: 4px; }
 
   /* ── Email shell ── */
   .email-shell {
-    width: 620px;
-    max-width: 100%;
+    width: 100%;
     background: #fff;
     border-radius: 0 0 12px 12px;
     overflow: hidden;
@@ -190,26 +185,65 @@
       0 48px 80px rgba(0,0,0,0.05);
   }
 
-  /* Hero */
-  .hero {
-    background: #7A04DD;
-    height: 160px;
-  }
+  .hero { background: #7A04DD; height: 160px; }
 
-  /* Body */
-  .email-body {
-    padding: 30px 36px 10px;
-    color: #333;
-    font-size: 16px;
-    line-height: 1.65;
-  }
-  .greeting       { font-size: 16px; color: #333; margin-bottom: 16px; }
-  .para           { margin-bottom: 16px; color: #333; font-size: 16px; line-height: 1.65; }
-  .para-highlight { margin-bottom: 16px; color: #555; font-size: 16px; line-height: 1.65; }
-  .para-cta-text  { margin-bottom: 24px; color: #7A04DD; font-size: 16px; line-height: 1.65; }
+  /* Email body */
+  .email-body { padding: 30px 36px 10px; color: #333; font-size: 16px; line-height: 1.65; }
+  .greeting { font-size: 16px; color: #333; margin-bottom: 16px; }
+  [contenteditable] { outline: none; border-radius: 3px; }
 
-  /* CTA */
-  .cta-wrap { text-align: center; padding: 4px 0 30px; }
+  /* Paragraphs */
+  .para-block { position: relative; margin-bottom: 16px; }
+  .para-block p {
+    font-size: 16px; color: #333; line-height: 1.65;
+    outline: none; border-radius: 3px;
+  }
+  .para-block p:hover { outline: 1.5px dashed rgba(122,4,221,0.35); outline-offset: 3px; }
+  .para-block p:focus { outline: 2px solid rgba(122,4,221,0.65); outline-offset: 3px; background: rgba(122,4,221,0.025); }
+
+  .para-delete {
+    position: absolute;
+    right: -30px; top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0,0,0,0.1);
+    color: rgba(0,0,0,0.35);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .para-block:hover .para-delete { opacity: 1; }
+  .para-delete:hover { background: rgba(217,48,37,0.1); border-color: rgba(217,48,37,0.3); color: #d93025; }
+
+  /* Add para */
+  .add-para-wrap { padding: 4px 0 16px; }
+  .add-para-btn {
+    background: none;
+    border: 1.5px dashed rgba(122,4,221,0.22);
+    border-radius: 6px;
+    width: 100%;
+    padding: 8px;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+    color: rgba(122,4,221,0.4);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .add-para-btn:hover { background: rgba(122,4,221,0.04); border-color: rgba(122,4,221,0.5); color: #7A04DD; }
+
+  /* CTA block */
+  .cta-block {
+    position: relative;
+    text-align: center;
+    padding: 4px 0 30px;
+  }
   .cta-btn {
     display: inline-block;
     background: #1a73e8;
@@ -219,7 +253,48 @@
     padding: 14px 38px;
     border-radius: 6px;
     cursor: text;
+    font-family: 'Roboto', sans-serif;
   }
+  .cta-btn:hover { outline: 1.5px dashed rgba(122,4,221,0.35); outline-offset: 5px; }
+  .cta-btn:focus { outline: 2px solid rgba(122,4,221,0.65); outline-offset: 5px; }
+
+  /* CTA delete — appears on hover of the whole block */
+  .cta-delete {
+    position: absolute;
+    right: 0; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0,0,0,0.1);
+    color: rgba(0,0,0,0.35);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .cta-block:hover .cta-delete { opacity: 1; }
+  .cta-delete:hover { background: rgba(217,48,37,0.1); border-color: rgba(217,48,37,0.3); color: #d93025; }
+
+  /* Add CTA button (shown when CTA is removed) */
+  .add-cta-wrap { padding: 4px 36px 30px; display: none; }
+  .add-cta-wrap.visible { display: block; }
+  .add-cta-btn {
+    background: none;
+    border: 1.5px dashed rgba(26,115,232,0.3);
+    border-radius: 6px;
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+    color: rgba(26,115,232,0.5);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .add-cta-btn:hover { background: rgba(26,115,232,0.04); border-color: rgba(26,115,232,0.6); color: #1a73e8; }
 
   /* Footer */
   .email-footer {
@@ -230,195 +305,608 @@
   }
   .social-icons { display: flex; justify-content: center; gap: 14px; margin-bottom: 18px; }
   .social-icon {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: #ddd;
+    width: 36px; height: 36px; border-radius: 50%; background: #ddd;
     display: flex; align-items: center; justify-content: center;
     font-size: 15px; color: #555;
   }
-  .footer-legal   { font-size: 11px; color: #999; line-height: 1.6; margin-bottom: 12px; }
-  .footer-opt     { font-size: 11px; color: #aaa; margin-bottom: 14px; }
-  .footer-links   { font-size: 12px; margin-bottom: 14px; display: flex; gap: 18px; justify-content: center; }
+  .footer-legal { font-size: 11px; color: #999; line-height: 1.6; margin-bottom: 12px; }
+  .footer-opt   { font-size: 11px; color: #aaa; margin-bottom: 14px; }
+  .footer-links { font-size: 12px; margin-bottom: 14px; display: flex; gap: 18px; justify-content: center; }
   .footer-links a { color: #7A04DD; text-decoration: underline; }
   .footer-company { font-size: 11px; color: #aaa; line-height: 1.7; }
   .footer-company a { color: #7A04DD; text-decoration: underline; }
+  .footer-legal[contenteditable]:hover, .footer-opt[contenteditable]:hover, .footer-company[contenteditable]:hover,
+  .greeting[contenteditable]:hover { outline: 1.5px dashed rgba(122,4,221,0.35); outline-offset: 3px; }
+  .footer-legal[contenteditable]:focus, .footer-opt[contenteditable]:focus, .footer-company[contenteditable]:focus,
+  .greeting[contenteditable]:focus { outline: 2px solid rgba(122,4,221,0.65); outline-offset: 3px; background: rgba(122,4,221,0.025); }
 
-  /* Editable highlights */
-  [contenteditable] { outline: none; border-radius: 3px; }
-  [contenteditable]:hover { outline: 1.5px dashed rgba(122,4,221,0.35); outline-offset: 3px; }
-  [contenteditable]:focus { outline: 2px solid rgba(122,4,221,0.65); outline-offset: 3px; background: rgba(122,4,221,0.025); }
+  /* ── Sidebar ── */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px;
+    background: rgba(255,255,255,0.42);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.72);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 0 rgba(255,255,255,0.9) inset;
+    position: sticky;
+    top: 44px;
+    align-self: flex-start;
+  }
 
-  /* Reset */
-  .reset-btn {
+  .sidebar-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(0,0,0,0.08);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    color: rgba(0,0,0,0.45);
+    transition: all 0.13s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .sidebar-btn:hover {
+    background: rgba(122,4,221,0.09);
+    border-color: rgba(122,4,221,0.25);
+    color: #7A04DD;
+    transform: scale(1.06);
+  }
+  .sidebar-btn.active {
+    background: rgba(122,4,221,0.14);
+    border-color: rgba(122,4,221,0.4);
+    color: #7A04DD;
+  }
+  .sidebar-btn:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .sidebar-btn:disabled:hover { background: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.08); color: rgba(0,0,0,0.45); }
+
+  /* Tooltip */
+  .sidebar-btn::after {
+    content: attr(data-tip);
+    position: absolute;
+    right: calc(100% + 10px);
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(30,10,50,0.82);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 11px;
+    font-family: 'Roboto', sans-serif;
+    white-space: nowrap;
+    padding: 4px 9px;
+    border-radius: 7px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    letter-spacing: 0.1px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    z-index: 9999;
+  }
+  .sidebar-btn:hover::after { opacity: 1; }
+
+  /* Colour swatch icon inside purple btn */
+  .swatch-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #7A04DD;
+  }
+  .sidebar-sep {
+    width: 22px; height: 1px;
+    background: rgba(0,0,0,0.08);
+    margin: 2px 0;
+  }
+
+  /* ── Bottom bar ── */
+  .bottom-bar {
+    position: relative; z-index: 1;
     margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+  }
+  .glass-btn {
     background: rgba(255,255,255,0.42);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.7);
     border-radius: 20px;
-    padding: 7px 18px;
+    padding: 7px 16px;
     font-size: 12px;
     cursor: pointer;
     color: rgba(0,0,0,0.4);
     font-family: 'Roboto', sans-serif;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     transition: all 0.15s;
+    display: flex; align-items: center; gap: 5px;
+    white-space: nowrap;
   }
-  .reset-btn:hover {
-    background: rgba(255,255,255,0.68);
-    color: rgba(0,0,0,0.6);
-    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-  }
+  .glass-btn:hover { background: rgba(255,255,255,0.68); color: rgba(0,0,0,0.6); box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+  .glass-btn.danger:hover { background: rgba(217,48,37,0.08); border-color: rgba(217,48,37,0.3); color: #d93025; }
+  .glass-btn:disabled { opacity: 0.32; cursor: not-allowed; }
+  .glass-btn:disabled:hover { background: rgba(255,255,255,0.42); color: rgba(0,0,0,0.4); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-  /* Colour-applied spans */
-  .jg-purple { color: #7A04DD; }
+  .save-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #34a853;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .save-dot.visible { opacity: 1; }
+
+  /* Add para button in sidebar: full purple */
+  .sidebar-btn--add-para { font-size: 19px; color: #7A04DD; }
+  .sidebar-btn--add-para:hover { color: #7A04DD; }
+  /* Add CTA button: blue tint */
+  .sidebar-btn--add-cta { font-size: 15px; color: rgba(26,115,232,0.6); }
+  .sidebar-btn--add-cta:hover { background: rgba(26,115,232,0.09); border-color: rgba(26,115,232,0.28); color: #1a73e8; }
 </style>
 </head>
 <body>
 
-<!-- App title -->
-<div class="app-title">Just<strong>Draft</strong> &nbsp;·&nbsp; Email Mockup Editor</div>
+<div class="app-title">Just<strong>Draft</strong></div>
 
-<div class="chrome">
+<div class="workspace">
 
-  <!-- Glass: subject + preview -->
-  <div class="glass-panel">
-    <div class="meta-row">
-      <span class="meta-label">Subject</span>
-      <div class="meta-input" contenteditable="true" spellcheck="true">Your email subject line</div>
-    </div>
-    <div class="meta-row">
-      <span class="meta-label">Preview</span>
-      <div class="meta-input dimmed" contenteditable="true" spellcheck="true">Preview text that appears in the inbox…</div>
-    </div>
-  </div>
-
-  <!-- Format bar: just the purple colour toggle -->
-  <div class="format-bar">
-    <button class="fmt-btn" id="btn-purple" onclick="applyPurple()" title="Make selected text JustGiving purple">
-      <span class="colour-swatch"></span> JG Purple
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+    <button class="sidebar-btn" id="btn-mobile" onclick="toggleMobile()" data-tip="Mobile preview · 375px">📱</button>
+    <div class="sidebar-sep"></div>
+    <button class="sidebar-btn" id="btn-purple" onclick="applyPurple()" data-tip="JG Purple (select text first)">
+      <div class="swatch-icon"></div>
     </button>
-    <div class="fmt-sep"></div>
-    <span class="fmt-hint">⌘B bold &nbsp;·&nbsp; ⌘I italic &nbsp;·&nbsp; select text to colour</span>
+    <button class="sidebar-btn sidebar-btn--add-para" onclick="addPara()" data-tip="Add paragraph">¶</button>
+    <button class="sidebar-btn sidebar-btn--add-cta" id="btn-add-cta" onclick="restoreCta()" data-tip="Restore button" style="display:none;">▭</button>
+    <div class="sidebar-sep"></div>
+    <button class="sidebar-btn" id="btn-undo" onclick="doUndo()" data-tip="Undo · ⌘Z" disabled>↩</button>
+    <button class="sidebar-btn" id="btn-redo" onclick="doRedo()" data-tip="Redo · ⌘⇧Z" disabled>↪</button>
   </div>
+
+  <!-- ── Main column ── -->
+  <div class="main-col">
+
+    <!-- Chrome -->
+    <div class="chrome">
+      <div class="glass-panel">
+        <div class="meta-row">
+          <span class="meta-label">Subject</span>
+          <div class="meta-input" id="subject-input" contenteditable="true" spellcheck="true">Your email subject line</div>
+          <span class="char-counter" id="subject-counter">28</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Preview</span>
+          <div class="meta-input dimmed" id="preview-input" contenteditable="true" spellcheck="true">Preview text that appears in the inbox…</div>
+          <span class="char-counter" id="preview-counter">40</span>
+        </div>
+      </div>
+      <div class="body-counter-bar">
+        <div class="body-stat">Words <span id="body-words">0</span></div>
+        <div class="body-stat">Characters <span id="body-chars">0</span></div>
+      </div>
+    </div>
+
+    <!-- Mobile label -->
+    <div class="mobile-label" id="mobile-label">375px mobile preview</div>
+
+    <!-- Email -->
+    <div class="email-outer" id="email-outer">
+      <div class="email-shell">
+
+        <div class="hero"></div>
+
+        <div class="email-body">
+          <p class="greeting" contenteditable="true" spellcheck="true">Hi there,</p>
+          <div id="para-container"></div>
+        </div>
+
+        <!-- CTA block (can be removed) -->
+        <div class="cta-block" id="cta-block">
+          <span class="cta-btn" contenteditable="true" spellcheck="true">Take our short survey</span>
+          <button class="cta-delete" title="Remove button" onclick="removeCta()">×</button>
+        </div>
+        <div class="email-footer">
+          <div class="social-icons">
+            <div class="social-icon">f</div>
+            <div class="social-icon">𝕏</div>
+            <div class="social-icon">in</div>
+            <div class="social-icon">◎</div>
+          </div>
+          <div class="footer-legal" contenteditable="true" spellcheck="true">Terms and conditions, requirements, and other information.</div>
+          <div class="footer-opt" contenteditable="true" spellcheck="true">You are receiving this email because you are opted into marketing from JustGiving.</div>
+          <div class="footer-links">
+            <a href="#">Contact us</a>
+            <a href="#">FAQs</a>
+            <a href="#">Unsubscribe</a>
+          </div>
+          <div class="footer-company" contenteditable="true" spellcheck="true"><a href="#">Giving.com Limited trading as JustGiving.com</a><br>Registered in England No. 3871904<br><br>Registered office:<br>Studio 1.19, Canterbury Court<br>1–3 Brixton Road, London, SW9 6DE</div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /email -->
+
+  </div><!-- /main-col -->
+</div><!-- /workspace -->
+
+<!-- Bottom bar -->
+<div class="bottom-bar">
+  <button class="glass-btn danger" onclick="resetAll()">↺ Reset All</button>
 </div>
-
-<!-- Email -->
-<div class="email-shell">
-
-  <div class="hero"></div>
-
-  <div class="email-body">
-    <p class="greeting" contenteditable="true" spellcheck="true">Hi there,</p>
-    <p class="para" contenteditable="true" spellcheck="true">Congratulations to you and your charity on your London Marathon fundraising! We know this means a lot for your mission, and we thank you for making JustGiving a part of your journey.</p>
-    <p class="para-highlight" contenteditable="true" spellcheck="true">We'd love to know… <strong>how was your fundraising experience?</strong></p>
-    <p class="para-cta-text" contenteditable="true" spellcheck="true">If you have 5 mins, answer a few Qs to be in with a chance to win a £50 Amazon voucher from our team.</p>
-  </div>
-
-  <div class="cta-wrap">
-    <span class="cta-btn" contenteditable="true" spellcheck="true">Take our short survey</span>
-  </div>
-
-  <div class="email-footer">
-    <div class="social-icons">
-      <div class="social-icon">f</div>
-      <div class="social-icon">𝕏</div>
-      <div class="social-icon">in</div>
-      <div class="social-icon">◎</div>
-    </div>
-    <div class="footer-legal" contenteditable="true" spellcheck="true">*Terms and conditions apply. Entry to JustGiving's prize draw is open to UK residents aged 18 and over who received this email. To enter the Prize Draw, complete the survey, including your contact details by 23:59 on 26 May 2025. There is a limit of one entry per person.</div>
-    <div class="footer-opt" contenteditable="true" spellcheck="true">You are receiving this email because you are opted into marketing from JustGiving.</div>
-    <div class="footer-links">
-      <a href="#">Contact us</a>
-      <a href="#">FAQs</a>
-      <a href="#">Unsubscribe</a>
-    </div>
-    <div class="footer-company" contenteditable="true" spellcheck="true">
-      <a href="#">Giving.com Limited trading as JustGiving.com</a><br>
-      Registered in England No. 3871904<br><br>
-      Registered office:<br>
-      Studio 1.19, Canterbury Court<br>
-      1–3 Brixton Road, London, SW9 6DE
-    </div>
-  </div>
-
-</div>
-
-<button class="reset-btn" onclick="resetAll()">↺ Reset to defaults</button>
 
 <script>
-  // ── Save originals ──
-  const originals = {};
-  document.querySelectorAll('[contenteditable]').forEach((el, i) => {
-    el.dataset.id = i;
-    originals[i] = el.innerHTML;
+'use strict';
+
+// ═══════════════════════════════════════════
+// DEFAULTS
+// ═══════════════════════════════════════════
+const DEFAULT_PARAS = [
+  'Congratulations to you and your charity on your London Marathon fundraising! We know this means a lot for your mission, and we thank you for making JustGiving a part of your journey.',
+  'We\'d love to know… <strong>how was your fundraising experience?</strong>',
+  'If you have 5 mins, answer a few Qs to be in with a chance to win a £50 Amazon voucher from our team.'
+];
+
+const DEFAULT_STATE = {
+  subject:       'Your email subject line',
+  preview:       'Preview text that appears in the inbox…',
+  greeting:      'Hi there,',
+  paras:         [...DEFAULT_PARAS],
+  ctaVisible:    true,
+  cta:           'Take our short survey',
+  footerLegal:   'Terms and conditions, requirements, and other information.',
+  footerOpt:     'You are receiving this email because you are opted into marketing from JustGiving.',
+  footerCompany: '<a href="#">Giving.com Limited trading as JustGiving.com</a><br>Registered in England No. 3871904<br><br>Registered office:<br>Studio 1.19, Canterbury Court<br>1–3 Brixton Road, London, SW9 6DE'
+};
+
+// ═══════════════════════════════════════════
+// CTA SHOW/HIDE
+// ═══════════════════════════════════════════
+function removeCta() {
+  pushSnapshot();
+  document.getElementById('cta-block').style.display = 'none';
+  const b = document.getElementById('btn-add-cta');
+  if (b) b.style.display = '';
+  scheduleSave();
+}
+function restoreCta() {
+  pushSnapshot();
+  document.getElementById('cta-block').style.display = '';
+  const b = document.getElementById('btn-add-cta');
+  if (b) b.style.display = 'none';
+  scheduleSave();
+}
+function ctaVisible() {
+  return document.getElementById('cta-block').style.display !== 'none';
+}
+
+// ═══════════════════════════════════════════
+// PARAGRAPH MANAGEMENT
+// ═══════════════════════════════════════════
+function makePara(html) {
+  const block = document.createElement('div');
+  block.className = 'para-block';
+
+  const p = document.createElement('p');
+  p.contentEditable = 'true';
+  p.spellcheck = true;
+  p.innerHTML = html || '';
+  p.addEventListener('input', onAnyInput);
+  p.addEventListener('keydown', handleParaKeydown);
+
+  const del = document.createElement('button');
+  del.className = 'para-delete';
+  del.title = 'Delete paragraph';
+  del.textContent = '×';
+  del.addEventListener('click', () => {
+    const container = document.getElementById('para-container');
+    if (container.children.length <= 1) return;
+    pushSnapshot();
+    block.remove();
+    updateCounters();
+    scheduleSave();
   });
 
-  function resetAll() {
-    if (!confirm('Reset all text to defaults?')) return;
-    document.querySelectorAll('[contenteditable]').forEach(el => {
-      el.innerHTML = originals[el.dataset.id];
-    });
-    updatePurpleBtn();
-  }
+  block.appendChild(p);
+  block.appendChild(del);
+  return block;
+}
 
-  // ── Bold / Italic ──
-  function execFmt(command) {
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
-    const anchor = sel.anchorNode;
-    if (!anchor) return;
-    const parent = anchor.nodeType === 3 ? anchor.parentElement : anchor;
-    if (!parent.closest('[contenteditable]')) return;
-    document.execCommand(command, false, null);
+function handleParaKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    pushSnapshot();
+    const block = e.target.closest('.para-block');
+    const newBlock = makePara('');
+    block.after(newBlock);
+    newBlock.querySelector('p').focus();
+    updateCounters();
+    scheduleSave();
   }
+}
 
-  document.addEventListener('keydown', e => {
-    if (e.metaKey || e.ctrlKey) {
-      if (e.key === 'b' || e.key === 'B') { e.preventDefault(); execFmt('bold'); }
-      if (e.key === 'i' || e.key === 'I') { e.preventDefault(); execFmt('italic'); }
-    }
+function addPara(html) {
+  pushSnapshot();
+  const container = document.getElementById('para-container');
+  const block = makePara(html || '');
+  container.appendChild(block);
+  block.querySelector('p').focus();
+  updateCounters();
+  scheduleSave();
+}
+
+function loadParas(paras) {
+  const container = document.getElementById('para-container');
+  container.innerHTML = '';
+  paras.forEach(html => container.appendChild(makePara(html)));
+  updateCounters();
+}
+
+function getParas() {
+  return Array.from(document.querySelectorAll('#para-container .para-block p')).map(p => p.innerHTML);
+}
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+function applyState(state) {
+  document.getElementById('subject-input').innerHTML  = state.subject;
+  document.getElementById('preview-input').innerHTML  = state.preview;
+  document.querySelector('.greeting').innerHTML       = state.greeting;
+  loadParas(state.paras);
+  // CTA
+  const ctaBlock = document.getElementById('cta-block');
+  const addCtaBtn = document.getElementById('btn-add-cta');
+  if (state.ctaVisible) {
+    ctaBlock.style.display = '';
+    if (addCtaBtn) addCtaBtn.style.display = 'none';
+  } else {
+    ctaBlock.style.display = 'none';
+    if (addCtaBtn) addCtaBtn.style.display = '';
+  }
+  document.querySelector('.cta-btn').innerHTML        = state.cta;
+  document.querySelector('.footer-legal').innerHTML   = state.footerLegal;
+  document.querySelector('.footer-opt').innerHTML     = state.footerOpt;
+  document.querySelector('.footer-company').innerHTML = state.footerCompany;
+  hookContentEditables();
+  updateCounters();
+}
+
+function getState() {
+  return {
+    subject:       document.getElementById('subject-input').innerHTML,
+    preview:       document.getElementById('preview-input').innerHTML,
+    greeting:      document.querySelector('.greeting').innerHTML,
+    paras:         getParas(),
+    ctaVisible:    ctaVisible(),
+    cta:           document.querySelector('.cta-btn').innerHTML,
+    footerLegal:   document.querySelector('.footer-legal').innerHTML,
+    footerOpt:     document.querySelector('.footer-opt').innerHTML,
+    footerCompany: document.querySelector('.footer-company').innerHTML,
+  };
+}
+
+// ═══════════════════════════════════════════
+// UNDO / REDO  (renamed to avoid window.history clash)
+// ═══════════════════════════════════════════
+const editStack = [];
+let editIndex   = -1;
+let snapTimer   = null;
+
+function pushSnapshot() {
+  editStack.splice(editIndex + 1);
+  const snap = JSON.stringify(getState());
+  if (editStack.length && editStack[editStack.length - 1] === snap) return;
+  editStack.push(snap);
+  if (editStack.length > 100) editStack.shift();
+  editIndex = editStack.length - 1;
+  updateUndoButtons();
+}
+
+function scheduleSnapshot() {
+  clearTimeout(snapTimer);
+  snapTimer = setTimeout(pushSnapshot, 600);
+}
+
+function doUndo() {
+  if (editIndex <= 0) return;
+  editIndex--;
+  applyState(JSON.parse(editStack[editIndex]));
+  updateUndoButtons();
+}
+
+function doRedo() {
+  if (editIndex >= editStack.length - 1) return;
+  editIndex++;
+  applyState(JSON.parse(editStack[editIndex]));
+  updateUndoButtons();
+}
+
+function updateUndoButtons() {
+  document.getElementById('btn-undo').disabled = editIndex <= 0;
+  document.getElementById('btn-redo').disabled = editIndex >= editStack.length - 1;
+}
+
+// ═══════════════════════════════════════════
+// HOOK INPUT EVENTS
+// ═══════════════════════════════════════════
+function hookContentEditables() {
+  document.querySelectorAll('[contenteditable]').forEach(el => {
+    el.removeEventListener('input', onAnyInput);
+    el.addEventListener('input', onAnyInput);
   });
+}
 
-  // ── Purple colour toggle ──
-  function applyPurple() {
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+function onAnyInput() {
+  updateCounters();
+  scheduleSnapshot();
+  scheduleSave();
+}
 
-    const anchor = sel.anchorNode;
-    const parent = anchor.nodeType === 3 ? anchor.parentElement : anchor;
-    if (!parent.closest('[contenteditable]')) return;
+// ═══════════════════════════════════════════
+// COUNTERS
+// ═══════════════════════════════════════════
+const SUBJECT_WARN = 40, SUBJECT_MAX = 60;
+const PREVIEW_WARN = 70, PREVIEW_MAX = 90;
 
-    // Check if selection is already fully purple — if so, remove colour
-    const range = sel.getRangeAt(0);
-    const container = range.commonAncestorContainer;
-    const el = container.nodeType === 3 ? container.parentElement : container;
-    const alreadyPurple = el.closest('.jg-purple') || el.style.color === 'rgb(122, 4, 221)';
+function plainText(el) {
+  return el ? (el.innerText || '').replace(/\n+/g, ' ').trim() : '';
+}
 
-    if (alreadyPurple) {
-      document.execCommand('removeFormat', false, null);
-      document.execCommand('foreColor', false, 'inherit');
-    } else {
-      document.execCommand('styleWithCSS', false, true);
-      document.execCommand('foreColor', false, '#7A04DD');
-    }
-    updatePurpleBtn();
+function updateCounters() {
+  const subLen = plainText(document.getElementById('subject-input')).length;
+  const subEl  = document.getElementById('subject-counter');
+  subEl.textContent = subLen;
+  subEl.className   = 'char-counter' + (subLen >= SUBJECT_MAX ? ' over' : subLen >= SUBJECT_WARN ? ' warn' : '');
+
+  const preLen = plainText(document.getElementById('preview-input')).length;
+  const preEl  = document.getElementById('preview-counter');
+  preEl.textContent = preLen;
+  preEl.className   = 'char-counter' + (preLen >= PREVIEW_MAX ? ' over' : preLen >= PREVIEW_WARN ? ' warn' : '');
+
+  let allText = '';
+  document.querySelectorAll('#para-container .para-block p').forEach(p => { allText += ' ' + plainText(p); });
+  allText = allText.trim();
+  document.getElementById('body-words').textContent = allText ? allText.split(/\s+/).filter(Boolean).length : 0;
+  document.getElementById('body-chars').textContent = allText.length;
+}
+
+// ═══════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════
+let saveTimer = null;
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 2000);
+}
+function saveNow() {
+  try {
+    localStorage.setItem('justdraft_v2', JSON.stringify(getState()));
+    const dot = document.getElementById('save-dot');
+    dot.classList.add('visible');
+    setTimeout(() => dot.classList.remove('visible'), 1800);
+  } catch(e) {}
+}
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem('justdraft_v2');
+    if (!raw) { alert('No saved draft found.'); return; }
+    pushSnapshot();
+    applyState(JSON.parse(raw));
+  } catch(e) { alert('Could not load saved draft.'); }
+}
+
+// ═══════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════
+function resetAll() {
+  if (!confirm('Reset All — this will clear your draft and restore the default content. This cannot be undone. Are you sure?')) return;
+  localStorage.removeItem('justdraft_v2');
+  editStack.length = 0;
+  editIndex = -1;
+  applyState(DEFAULT_STATE);
+  pushSnapshot();
+}
+
+// ═══════════════════════════════════════════
+// MOBILE PREVIEW
+// ═══════════════════════════════════════════
+let mobileView = false;
+function toggleMobile() {
+  mobileView = !mobileView;
+  document.getElementById('email-outer').classList.toggle('mobile-view', mobileView);
+  document.getElementById('btn-mobile').classList.toggle('active', mobileView);
+  document.getElementById('mobile-label').classList.toggle('visible', mobileView);
+}
+
+// ═══════════════════════════════════════════
+// FORMATTING
+// ═══════════════════════════════════════════
+function execFmt(command) {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const anchor = sel.anchorNode;
+  if (!anchor) return;
+  const parent = anchor.nodeType === 3 ? anchor.parentElement : anchor;
+  if (!parent.closest('[contenteditable]')) return;
+  document.execCommand(command, false, null);
+  scheduleSnapshot();
+}
+
+function applyPurple() {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount || sel.isCollapsed) return;
+  const anchor = sel.anchorNode;
+  const parent = anchor.nodeType === 3 ? anchor.parentElement : anchor;
+  if (!parent.closest('[contenteditable]')) return;
+
+  const range = sel.getRangeAt(0);
+  const cont  = range.commonAncestorContainer;
+  const el    = cont.nodeType === 3 ? cont.parentElement : cont;
+  const alreadyPurple = el.style.color === 'rgb(122, 4, 221)' || el.closest('[style*="122, 4, 221"]');
+
+  if (alreadyPurple) {
+    document.execCommand('removeFormat', false, null);
+  } else {
+    document.execCommand('styleWithCSS', false, true);
+    document.execCommand('foreColor', false, '#7A04DD');
   }
+  scheduleSnapshot();
+  updatePurpleBtn();
+}
 
-  function updatePurpleBtn() {
-    const sel = window.getSelection();
-    const btn = document.getElementById('btn-purple');
-    if (!sel || sel.isCollapsed) { btn.classList.remove('active'); return; }
-    try {
-      const colour = document.queryCommandValue('foreColor');
-      // Chrome returns rgb(), Firefox may return hex
-      const isPurple = colour === 'rgb(122, 4, 221)' || colour === '#7a04dd' || colour === '#7A04DD';
-      btn.classList.toggle('active', isPurple);
-    } catch(e) {}
+function updatePurpleBtn() {
+  const sel = window.getSelection();
+  const btn = document.getElementById('btn-purple');
+  if (!sel || sel.isCollapsed) { btn.classList.remove('active'); return; }
+  try {
+    const colour = document.queryCommandValue('foreColor');
+    btn.classList.toggle('active', colour === 'rgb(122, 4, 221)' || colour.toLowerCase() === '#7a04dd');
+  } catch(e) {}
+}
+
+document.addEventListener('selectionchange', updatePurpleBtn);
+
+// ═══════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (!(e.metaKey || e.ctrlKey)) return;
+  if (e.key === 'b' || e.key === 'B') { e.preventDefault(); execFmt('bold'); }
+  if (e.key === 'i' || e.key === 'I') { e.preventDefault(); execFmt('italic'); }
+  if (e.key === 's' || e.key === 'S') { e.preventDefault(); saveNow(); }
+  if (e.key === 'z' || e.key === 'Z') {
+    e.preventDefault();
+    e.shiftKey ? doRedo() : doUndo();
   }
+});
 
-  document.addEventListener('selectionchange', updatePurpleBtn);
+// ═══════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════
+(function init() {
+  // Try to load saved, else use defaults
+  try {
+    const raw = localStorage.getItem('justdraft_v2');
+    if (raw) { applyState(JSON.parse(raw)); }
+    else      { applyState(DEFAULT_STATE); }
+  } catch(e) {
+    applyState(DEFAULT_STATE);
+  }
+  pushSnapshot();
+  updateCounters();
+})();
 </script>
-
 </body>
 </html>
